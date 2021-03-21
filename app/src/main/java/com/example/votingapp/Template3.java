@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,16 +20,24 @@ import com.google.firebase.database.ValueEventListener;
 public class Template3 extends AppCompatActivity {
 
     private boolean exists = false;
+    //FireBase Reference
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRef = database.getReference("Users");
+    final String userId = myRef.push().getKey();
+
+    Button voteBtn;
+    TextView question;
+    TextView option1;
+    TextView option2;
+    TextView option3;
+    RadioButton radioButtonOpt1;
+    RadioButton radioButtonOpt2;
+    RadioButton radioButtonOpt3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_template3);
-
-        //FireBase Reference
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("Users");
-        final String userId = myRef.push().getKey();
 
         //Get user name
         final Intent intent = getIntent();
@@ -39,11 +48,14 @@ public class Template3 extends AppCompatActivity {
         final String option3temp3 = intent.getStringExtra("option3");
 
         //Page Buttons
-        Button voteBtn = findViewById(R.id.votebtn3);
-        TextView question = findViewById(R.id.questiontemp3);
-        TextView option1 = findViewById(R.id.option1temp3);
-        TextView option2 = findViewById(R.id.option2temp3);
-        TextView option3 = findViewById(R.id.option3temp3);
+        voteBtn = findViewById(R.id.votebtn3);
+        question = findViewById(R.id.questiontemp3);
+        option1 = findViewById(R.id.option1temp3);
+        option2 = findViewById(R.id.option2temp3);
+        option3 = findViewById(R.id.option3temp3);
+        radioButtonOpt1 = findViewById(R.id.radioBtnT3Opt1);
+        radioButtonOpt2 = findViewById(R.id.radioBtnT3Opt2);
+        radioButtonOpt3 = findViewById(R.id.radioBtnT3Opt3);
 
         if(username != null && !username.equals("Admin")) {
             question.setText(questiontemp3);
@@ -61,55 +73,113 @@ public class Template3 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!username.equals("Admin")){
-                    Toast.makeText(Template3.this, "Clicked!", Toast.LENGTH_SHORT).show();
+                    userAction(username);
                     return;
                 }
-
-                //take question
-                String questiontemp3 = question.getText().toString();
-                String option1temp3 = option1.getText().toString();
-                String option2temp3 = option2.getText().toString();
-                String option3temp3 = option3.getText().toString();
-
-                //search if template already exists
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        try {
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                String username = ds.child("username").getValue(String.class);
-
-                                if (username.equals("Template3")) {
-                                    ds.child("questiontemp3").getRef().setValue(questiontemp3);
-                                    ds.child("option1").getRef().setValue(option1temp3);
-                                    ds.child("option2").getRef().setValue(option2temp3);
-                                    ds.child("option3").getRef().setValue(option3temp3);
-                                    exists = true;
-                                    Toast.makeText(Template3.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            //else create Template
-                            if(!exists) {
-                                myRef.child(userId).child("username").setValue("Template3");
-                                myRef.child(userId).child("questiontemp3").setValue(questiontemp3);
-                                myRef.child(userId).child("option1").setValue(option1temp3);
-                                myRef.child(userId).child("option2").setValue(option2temp3);
-                                myRef.child(userId).child("option3").setValue(option3temp3);
-                                Toast.makeText(Template3.this, "Template created successfully", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                            finish();
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-
+                else{
+                    adminAction();
+                }
             }
         });
 
     }
+
+    public void adminAction(){
+        //take question
+        String questiontemp3 = question.getText().toString();
+        String option1temp3 = option1.getText().toString();
+        String option2temp3 = option2.getText().toString();
+        String option3temp3 = option3.getText().toString();
+
+        //search if template already exists
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String username = ds.child("username").getValue(String.class);
+
+                        if (username.equals("Template3")) {
+                            ds.child("questiontemp3").getRef().setValue(questiontemp3);
+                            ds.child("option1").getRef().setValue(option1temp3);
+                            ds.child("option2").getRef().setValue(option2temp3);
+                            ds.child("option3").getRef().setValue(option3temp3);
+                            ds.child("option1votes").getRef().setValue(0);
+                            ds.child("option2votes").getRef().setValue(0);
+                            ds.child("option3votes").getRef().setValue(0);
+                            exists = true;
+                            Toast.makeText(Template3.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    //else create Template
+                    if(!exists) {
+                        myRef.child(userId).child("username").setValue("Template3");
+                        myRef.child(userId).child("questiontemp3").setValue(questiontemp3);
+                        myRef.child(userId).child("option1").setValue(option1temp3);
+                        myRef.child(userId).child("option2").setValue(option2temp3);
+                        myRef.child(userId).child("option3").setValue(option3temp3);
+                        myRef.child(userId).child("option1votes").setValue(0);
+                        myRef.child(userId).child("option2votes").setValue(0);
+                        myRef.child(userId).child("option3votes").setValue(0);
+                        Toast.makeText(Template3.this, "Template created successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    finish();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+    public void userAction(String crtUsername){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String username = ds.child("username").getValue(String.class);
+                        //update Template if exists
+                        if(username.equals("Template3")){
+                            //to do
+                            if(radioButtonOpt1.isChecked()){
+                                int crtValue = Integer.parseInt(ds.child("option1votes").getValue().toString());
+                                ds.child("option1votes").getRef().setValue(crtValue+1);
+                            }
+                            else if(radioButtonOpt2.isChecked()){
+                                int crtValue = Integer.parseInt(ds.child("option2votes").getValue().toString());
+                                ds.child("option2votes").getRef().setValue(crtValue+1);
+                            }
+                            else if(radioButtonOpt3.isChecked()){
+                                int crtValue = Integer.parseInt(ds.child("option3votes").getValue().toString());
+                                ds.child("option3votes").getRef().setValue(crtValue+1);
+                            }
+                            else{
+                                Toast.makeText(Template3.this, "Please choose an option", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                    }
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String username = ds.child("username").getValue(String.class);
+                        if (username.equals(crtUsername)) {
+                            ds.child("voted").getRef().setValue(1);
+                            //Toast.makeText(Template1.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    finish();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
 }
