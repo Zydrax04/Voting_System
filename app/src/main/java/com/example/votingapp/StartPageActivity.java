@@ -27,10 +27,6 @@ public class StartPageActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openTestActivity(){
-        Intent intent = new Intent(this, testActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +36,6 @@ public class StartPageActivity extends AppCompatActivity {
         //Page Buttons
         ImageView loginImg = findViewById(R.id.loginImg);
         ImageView registerImg = findViewById(R.id.registerImg);
-        Button testbtn = findViewById(R.id.testbtn);
 
         //OnClickListener for accountBtn -> GetAccount
         loginImg.setOnClickListener(new View.OnClickListener() {
@@ -58,12 +53,6 @@ public class StartPageActivity extends AppCompatActivity {
             }
         });
 
-        //OnClickListener for accountBtn -> GetAccount
-        testbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openTestActivity();
-            }
-        });
+
     }
 }
