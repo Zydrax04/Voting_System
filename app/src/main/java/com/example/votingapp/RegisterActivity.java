@@ -1,5 +1,6 @@
 package com.example.votingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
@@ -18,25 +19,58 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
     public EditText mEmail;
     public EditText mSubject;
     public EditText mMessage;
+    public final ArrayList<User> users = new ArrayList<>();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final DatabaseReference myRef = database.getReference("Users");
+    private final String userId = myRef.push().getKey();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String username = ds.child("username").getValue(String.class);
+                        String password = ds.child("password").getValue(String.class);
+                        User user = new User(username, password);
+                        users.add(user);
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
 
         ImageView getStarted = findViewById(R.id.getStarted);
@@ -94,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Environment.DIRECTORY_PICTURES), "cat.png");
                 Bitmap bitmap = BitmapFactory.decodeFile(mFile.getPath());
                 //get Account
-                String message = mEmail.getText().toString() + ":" + "1234" + "\\0";
+                String message = mEmail.getText().toString() + ":" + "12345" + "\\0";
                 BinaryCode code = new BinaryCode();
                 code.binaryCode(message);
                 String encodedMessage = code.giveStack(); //get message in binary
@@ -121,8 +155,10 @@ public class RegisterActivity extends AppCompatActivity {
                 catch (Exception e){
                     e.printStackTrace();
                 }
-
-                sendMail();
+                boolean createdSuccesfull = false;
+                createdSuccesfull = createAccount();
+                if(createdSuccesfull)
+                    sendMail();
             }
         });
     }
@@ -141,6 +177,39 @@ public class RegisterActivity extends AppCompatActivity {
 
         javaMailAPI.execute();
 
+    }
+
+    private boolean createAccount(){
+        String password = "12345";
+        String mail = mEmail.getText().toString().trim();
+
+        MD5 md5Hasher = new MD5(password);
+        String hashedPasswd = md5Hasher.getMD5();
+
+
+
+        boolean checkUser = mail.matches("[a-zA-Z0-9_]{6,20}@[a-zA-Z0-9]+\\.com");
+        if (checkUser) {
+            boolean found = false;
+            for (User user1 : users)
+                if (user1.getUsername().equals(mail)) {
+                    found = true;
+                    break;
+                }
+            if (found) {
+                Toast.makeText(RegisterActivity.this, "Email is already registered!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            else {
+                myRef.child(userId).child("username").setValue(mail);
+                myRef.child(userId).child("password").setValue(hashedPasswd);
+                myRef.child(userId).child("voted").setValue(0);
+                return true;
+            }
+        } else {
+            Toast.makeText(RegisterActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
 
