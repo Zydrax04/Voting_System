@@ -30,6 +30,7 @@ public class ResultsActivity extends AppCompatActivity {
         final String questiontemp = intent.getStringExtra("questiontemp");
         final String answer1format;
         final String answer2format;
+        final String answer3format;
         question.setText(questiontemp);
         if(templateName.equals("Template1")){
             answer1format = intent.getStringExtra("yes");
@@ -37,6 +38,21 @@ public class ResultsActivity extends AppCompatActivity {
             answer1.setText("yes: " + answer1format);
             answer2.setText("no: " + answer2format);
             answer3.setVisibility(View.INVISIBLE);
+        }
+        else if(templateName.equals("Template2")){
+            answer1format = intent.getStringExtra("option1") + ": " + intent.getStringExtra("option1votes");
+            answer2format = intent.getStringExtra("option2") + ": " + intent.getStringExtra("option2votes");
+            answer1.setText(answer1format);
+            answer2.setText(answer2format);
+            answer3.setVisibility(View.INVISIBLE);
+        }
+        else if(templateName.equals("Template3")){
+            answer1format = intent.getStringExtra("option1") + ": " + intent.getStringExtra("option1votes");
+            answer2format = intent.getStringExtra("option2") + ": " + intent.getStringExtra("option2votes");
+            answer3format = intent.getStringExtra("option3") + ": " + intent.getStringExtra("option3votes");
+            answer1.setText(answer1format);
+            answer2.setText(answer2format);
+            answer3.setText(answer3format);
         }
     }
 }

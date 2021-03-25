@@ -64,10 +64,12 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("no").getValue(Long.class).toString()); //number of no answers
                         }
                         if(username.equals("Template2")){
-                            template.add(username);
-                            template.add(ds.child("questiontemp2").getValue(String.class));
-                            template.add(ds.child("option1").getValue(String.class));
-                            template.add(ds.child("option2").getValue(String.class));
+                            template.add(username); //name
+                            template.add(ds.child("questiontemp2").getValue(String.class)); //question
+                            template.add(ds.child("option1").getValue(String.class)); //answer option1
+                            template.add(ds.child("option2").getValue(String.class)); //answer option2
+                            template.add(ds.child("option1votes").getValue(Long.class).toString()); //answer option1 votes
+                            template.add(ds.child("option2votes").getValue(Long.class).toString()); //answer option2 votes
                         }
                         if(username.equals("Template3")){
                             template.add(username);
@@ -75,6 +77,9 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option1").getValue(String.class));
                             template.add(ds.child("option2").getValue(String.class));
                             template.add(ds.child("option3").getValue(String.class));
+                            template.add(ds.child("option1votes").getValue(Long.class).toString());
+                            template.add(ds.child("option2votes").getValue(Long.class).toString());
+                            template.add(ds.child("option3votes").getValue(Long.class).toString());
                         }
                     }
                 } catch (Throwable e) {
@@ -136,20 +141,25 @@ public class UserPanelActivity extends AppCompatActivity {
                     openTemplateActivity(i);
                 }
                 if(templateName.equals("Template2")){
-                    Intent i = new Intent(getBaseContext(), Template2.class);
-                    i.putExtra("USER_NAME", username);
-                    i.putExtra("questiontemp2", templateQuestion);
+                    Intent i = new Intent(getBaseContext(), ResultsActivity.class);
+                    i.putExtra("TEMPLATE_NAME", templateName);
+                    i.putExtra("questiontemp", templateQuestion);
                     i.putExtra("option1", template.get(2));
                     i.putExtra("option2", template.get(3));
+                    i.putExtra("option1votes", template.get(4));
+                    i.putExtra("option2votes", template.get(5));
                     openTemplateActivity(i);
                 }
                 if(templateName.equals("Template3")){
-                    Intent i = new Intent(getBaseContext(), Template3.class);
-                    i.putExtra("USER_NAME", username);
-                    i.putExtra("questiontemp3", templateQuestion);
+                    Intent i = new Intent(getBaseContext(), ResultsActivity.class);
+                    i.putExtra("TEMPLATE_NAME", templateName);
+                    i.putExtra("questiontemp", templateQuestion);
                     i.putExtra("option1", template.get(2));
                     i.putExtra("option2", template.get(3));
                     i.putExtra("option3", template.get(4));
+                    i.putExtra("option1votes", template.get(5));
+                    i.putExtra("option2votes", template.get(6));
+                    i.putExtra("option3votes", template.get(7));
                     openTemplateActivity(i);
                 }
             }
