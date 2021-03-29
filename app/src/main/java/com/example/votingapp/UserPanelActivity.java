@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class UserPanelActivity extends AppCompatActivity {
+    private boolean voted = false;
 
     public void openTemplateActivity(Intent i) {
         startActivity(i);
@@ -42,6 +43,7 @@ public class UserPanelActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         final String username = intent.getStringExtra("FULL_NAME");
+        final String email = intent.getStringExtra("USER_NAME");
 
         Button voteBtn = findViewById(R.id.votebtn);
         Button resultsBtn = findViewById(R.id.resultsBtn);
@@ -56,6 +58,9 @@ public class UserPanelActivity extends AppCompatActivity {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         template.clear();
                         String username = ds.child("username").getValue(String.class);
+                        if(username.equals(email) && ds.child("voted").getValue(Long.class) == 1){
+                            voted = true; //check if user has already voted
+                        }
                         if(username.equals("Template1")){
                             //users.add(new User(username));
                             template.add(username); //name
@@ -94,18 +99,22 @@ public class UserPanelActivity extends AppCompatActivity {
         voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(voted){
+                    Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //template name
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
                 if(templateName.equals("Template1")) {
                     Intent i = new Intent(getBaseContext(), Template1.class);
-                    i.putExtra("USER_NAME", username);
+                    i.putExtra("USER_NAME", email);
                     i.putExtra("questiontemp1", templateQuestion);
                     openResultsActivity(i);
                 }
                 if(templateName.equals("Template2")){
                     Intent i = new Intent(getBaseContext(), Template2.class);
-                    i.putExtra("USER_NAME", username);
+                    i.putExtra("USER_NAME", email);
                     i.putExtra("questiontemp2", templateQuestion);
                     i.putExtra("option1", template.get(2));
                     i.putExtra("option2", template.get(3));
@@ -113,7 +122,7 @@ public class UserPanelActivity extends AppCompatActivity {
                 }
                 if(templateName.equals("Template3")){
                     Intent i = new Intent(getBaseContext(), Template3.class);
-                    i.putExtra("USER_NAME", username);
+                    i.putExtra("USER_NAME", email);
                     i.putExtra("questiontemp3", templateQuestion);
                     i.putExtra("option1", template.get(2));
                     i.putExtra("option2", template.get(3));

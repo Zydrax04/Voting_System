@@ -86,6 +86,9 @@ public class Template1 extends AppCompatActivity {
                             exists = true;
                             Toast.makeText(Template1.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
                         }
+                        else if(username.matches("Template.")){
+                            ds.getRef().removeValue();
+                        }
                     }
                     //else create Template
                     if(!exists) {

@@ -8,29 +8,27 @@
 
     <TextView
         android:id="@+id/answer3"
-        android:layout_width="106dp"
-        android:layout_height="37dp"
+        android:layout_width="361dp"
+        android:layout_height="41dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.226"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.606" />
+        app:layout_constraintVertical_bias="0.618" />
 
     <TextView
         android:id="@+id/answer2"
-        android:layout_width="106dp"
-        android:layout_height="37dp"
+        android:layout_width="361dp"
+        android:layout_height="41dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.226"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.553" />
+        app:layout_constraintVertical_bias="0.559" />
 
     <TextView
         android:id="@+id/question_res"
@@ -46,13 +44,12 @@
 
     <TextView
         android:id="@+id/answer1"
-        android:layout_width="106dp"
-        android:layout_height="37dp"
+        android:layout_width="361dp"
+        android:layout_height="41dp"
         android:text="TextView"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.226"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
