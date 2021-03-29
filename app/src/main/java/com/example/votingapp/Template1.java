@@ -89,6 +89,8 @@ public class Template1 extends AppCompatActivity {
                         else if(username.matches("Template.")){
                             ds.getRef().removeValue();
                         }
+                        else
+                            ds.child("voted").getRef().setValue(0);
                     }
                     //else create Template
                     if(!exists) {
