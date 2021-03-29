@@ -114,8 +114,12 @@ public class GetAccountActivity extends AppCompatActivity {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
                         String password = ds.child("password").getValue(String.class);
-                        User user = new User(username, password);
-                        users.add(user);
+                        if(!username.matches("Template.")) {
+                            String firstName = ds.child("firstName").getValue(String.class);
+                            String lastName = ds.child("lastName").getValue(String.class);
+                            User user = new User(username, password, firstName, lastName);
+                            users.add(user);
+                        }
                     }
                 } catch (Throwable e) {
                     e.printStackTrace();
@@ -132,17 +136,17 @@ public class GetAccountActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TextView userText = findViewById(R.id.userText);
                 TextView passwordText = findViewById(R.id.passwordText);
-                String username = userText.getText().toString();
+                String username = userText.getText().toString().trim();
                 String password = passwordText.getText().toString();
+                String fullName = "user";
                 //Make Password Hash
                 MD5 md5 = new MD5(password);
                 String hashedPassword = md5.getMD5();
 
                 boolean found = false;
-                String username2 = "";
                 for (User user1 : users) {
                     if (user1.getUsername().equals(username) && user1.getPassword().equals(hashedPassword)) {
-                        username2 = user1.getUsername();
+                        fullName = user1.getFirstName() + " " + user1.getLastName();
                         found = true;
                         break;
                     }
@@ -154,6 +158,7 @@ public class GetAccountActivity extends AppCompatActivity {
                     else{
                         Intent i = new Intent(getBaseContext(), UserPanelActivity.class);
                         i.putExtra("USER_NAME", username);
+                        i.putExtra("FULL_NAME", fullName);
                         openUserPanelActivity(i);
                     }
                 } else

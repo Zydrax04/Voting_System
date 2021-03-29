@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
     public EditText mEmail;
     public EditText mSubject;
     public EditText mMessage;
+    public EditText firstNameTextView;
+    public EditText lastNameTextView;
     public final ArrayList<User> users = new ArrayList<>();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference myRef = database.getReference("Users");
@@ -49,9 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-
-
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,10 +72,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         ImageView getStarted = findViewById(R.id.getStarted);
         mEmail = (EditText)findViewById(R.id.emailAddr);
+        firstNameTextView = findViewById(R.id.firstNameTextView);
+        lastNameTextView = findViewById(R.id.lastNameTextView);
         Button registerBtn = findViewById(R.id.registerBtn);
         //make email field and register Button invisible
         registerBtn.setVisibility(View.INVISIBLE);
         mEmail.setVisibility(View.INVISIBLE);
+        firstNameTextView.setVisibility(View.INVISIBLE);
+        lastNameTextView.setVisibility(View.INVISIBLE);
 
         getStarted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +112,8 @@ public class RegisterActivity extends AppCompatActivity {
                             //make email field and register Button visible
                             registerBtn.setVisibility(View.VISIBLE);
                             mEmail.setVisibility(View.VISIBLE);
+                            firstNameTextView.setVisibility(View.VISIBLE);
+                            lastNameTextView.setVisibility(View.VISIBLE);
 
                         }
                         catch (Exception e){
@@ -182,13 +185,17 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean createAccount(){
         String password = "12345";
         String mail = mEmail.getText().toString().trim();
-
+        String firstName = firstNameTextView.getText().toString().trim();
+        String lastName = lastNameTextView.getText().toString().trim();
         MD5 md5Hasher = new MD5(password);
         String hashedPasswd = md5Hasher.getMD5();
 
-
-
         boolean checkUser = mail.matches("[a-zA-Z0-9_]{6,20}@[a-zA-Z0-9]+\\.com");
+        boolean checkName = firstName.matches("[A-Za-z]{2,}") && lastName.matches("[A-Za-z]{2,}");
+        if(!checkName){
+            Toast.makeText(RegisterActivity.this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (checkUser) {
             boolean found = false;
             for (User user1 : users)
@@ -203,6 +210,8 @@ public class RegisterActivity extends AppCompatActivity {
             else {
                 myRef.child(userId).child("username").setValue(mail);
                 myRef.child(userId).child("password").setValue(hashedPasswd);
+                myRef.child(userId).child("firstName").setValue(firstName);
+                myRef.child(userId).child("lastName").setValue(lastName);
                 myRef.child(userId).child("voted").setValue(0);
                 return true;
             }

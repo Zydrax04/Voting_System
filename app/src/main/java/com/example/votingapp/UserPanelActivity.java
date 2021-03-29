@@ -41,7 +41,7 @@ public class UserPanelActivity extends AppCompatActivity {
         final ArrayList<String> template = new ArrayList<>();
 
         final Intent intent = getIntent();
-        final String username = intent.getStringExtra("USER_NAME");
+        final String username = intent.getStringExtra("FULL_NAME");
 
         Button voteBtn = findViewById(R.id.votebtn);
         Button resultsBtn = findViewById(R.id.resultsBtn);
