@@ -17,14 +17,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class Template2 extends AppCompatActivity {
     private boolean exists = false;
     //FireBase Reference
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference myRef = database.getReference("Users");
-    final String userId = myRef.push().getKey();
+    final DatabaseReference myPollsRef = database.getReference("Polls");
+    final DatabaseReference myUsersRef = database.getReference("Users");
+    final String userId = myPollsRef.push().getKey();
     Button voteBtn;
     TextView question;
     TextView option1;
@@ -83,7 +82,7 @@ public class Template2 extends AppCompatActivity {
         String option2temp2 = option2.getText().toString();
 
         //search if template already exists
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -102,18 +101,32 @@ public class Template2 extends AppCompatActivity {
                         else if(username.matches("Template.")){
                             ds.getRef().removeValue();
                         }
-                        else
-                            ds.child("voted").getRef().setValue(0);
                     }
                     //else create Template
                     if(!exists) {
-                        myRef.child(userId).child("username").setValue("Template2");
-                        myRef.child(userId).child("questiontemp2").setValue(questiontemp2);
-                        myRef.child(userId).child("option1").setValue(option1temp2);
-                        myRef.child(userId).child("option2").setValue(option2temp2);
-                        myRef.child(userId).child("option1votes").setValue(0);
-                        myRef.child(userId).child("option2votes").setValue(0);
+                        myPollsRef.child(userId).child("username").setValue("Template2");
+                        myPollsRef.child(userId).child("questiontemp2").setValue(questiontemp2);
+                        myPollsRef.child(userId).child("option1").setValue(option1temp2);
+                        myPollsRef.child(userId).child("option2").setValue(option2temp2);
+                        myPollsRef.child(userId).child("option1votes").setValue(0);
+                        myPollsRef.child(userId).child("option2votes").setValue(0);
                         Toast.makeText(Template2.this, "Template created successfully", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //renew voted to 0 for all users
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.child("voted").getRef().setValue(0);
                     }
                     finish();
                 } catch (Throwable e) {
@@ -127,7 +140,8 @@ public class Template2 extends AppCompatActivity {
     }
 
     public void userAction(String crtUsername){
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        //change vote result
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -150,6 +164,19 @@ public class Template2 extends AppCompatActivity {
                             }
                         }
                     }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //set voted to 1 for user
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
                         if (username.equals(crtUsername)) {

@@ -22,8 +22,9 @@ public class Template3 extends AppCompatActivity {
     private boolean exists = false;
     //FireBase Reference
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference myRef = database.getReference("Users");
-    final String userId = myRef.push().getKey();
+    final DatabaseReference myPollsRef = database.getReference("Polls");
+    final DatabaseReference myUsersRef = database.getReference("Users");
+    final String userId = myPollsRef.push().getKey();
 
     Button voteBtn;
     TextView question;
@@ -92,7 +93,7 @@ public class Template3 extends AppCompatActivity {
         String option3temp3 = option3.getText().toString();
 
         //search if template already exists
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -113,21 +114,35 @@ public class Template3 extends AppCompatActivity {
                         else if(username.matches("Template.")){
                             ds.getRef().removeValue();
                         }
-                        else
-                            ds.child("voted").getRef().setValue(0);
                     }
                     //else create Template
                     if(!exists) {
-                        myRef.child(userId).child("username").setValue("Template3");
-                        myRef.child(userId).child("questiontemp3").setValue(questiontemp3);
-                        myRef.child(userId).child("option1").setValue(option1temp3);
-                        myRef.child(userId).child("option2").setValue(option2temp3);
-                        myRef.child(userId).child("option3").setValue(option3temp3);
-                        myRef.child(userId).child("option1votes").setValue(0);
-                        myRef.child(userId).child("option2votes").setValue(0);
-                        myRef.child(userId).child("option3votes").setValue(0);
+                        myPollsRef.child(userId).child("username").setValue("Template3");
+                        myPollsRef.child(userId).child("questiontemp3").setValue(questiontemp3);
+                        myPollsRef.child(userId).child("option1").setValue(option1temp3);
+                        myPollsRef.child(userId).child("option2").setValue(option2temp3);
+                        myPollsRef.child(userId).child("option3").setValue(option3temp3);
+                        myPollsRef.child(userId).child("option1votes").setValue(0);
+                        myPollsRef.child(userId).child("option2votes").setValue(0);
+                        myPollsRef.child(userId).child("option3votes").setValue(0);
                         Toast.makeText(Template3.this, "Template created successfully", Toast.LENGTH_SHORT).show();
                         finish();
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //renew voted to 0 for all users
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.child("voted").getRef().setValue(0);
                     }
                     finish();
                 } catch (Throwable e) {
@@ -142,7 +157,7 @@ public class Template3 extends AppCompatActivity {
     }
 
     public void userAction(String crtUsername){
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -169,6 +184,19 @@ public class Template3 extends AppCompatActivity {
                             }
                         }
                     }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //set voted to 1 for user
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
                         if (username.equals(crtUsername)) {

@@ -17,14 +17,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class Template1 extends AppCompatActivity {
     private boolean exists = false;
     //FireBase Reference
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference myRef = database.getReference("Users");
-    final String userId = myRef.push().getKey();
+    final DatabaseReference myPollsRef = database.getReference("Polls");
+    final DatabaseReference myUsersRef = database.getReference("Users");
+    final String userId = myPollsRef.push().getKey();
 
     //EditText
     TextView question;
@@ -72,7 +71,7 @@ public class Template1 extends AppCompatActivity {
         String questiontemp1 = question.getText().toString();
 
         //search if template already exists
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -89,16 +88,30 @@ public class Template1 extends AppCompatActivity {
                         else if(username.matches("Template.")){
                             ds.getRef().removeValue();
                         }
-                        else
-                            ds.child("voted").getRef().setValue(0);
                     }
                     //else create Template
                     if(!exists) {
-                        myRef.child(userId).child("username").setValue("Template1");
-                        myRef.child(userId).child("questiontemp1").setValue(questiontemp1);
-                        myRef.child(userId).child("yes").setValue(0);
-                        myRef.child(userId).child("no").setValue(0);
+                        myPollsRef.child(userId).child("username").setValue("Template1");
+                        myPollsRef.child(userId).child("questiontemp1").setValue(questiontemp1);
+                        myPollsRef.child(userId).child("yes").setValue(0);
+                        myPollsRef.child(userId).child("no").setValue(0);
                         Toast.makeText(Template1.this, "Template created successfully", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //renew voted to 0 for all users
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.child("voted").getRef().setValue(0);
                     }
                     finish();
                 } catch (Throwable e) {
@@ -112,7 +125,7 @@ public class Template1 extends AppCompatActivity {
     }
 
     public void userAction(String crtUsername){
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -135,6 +148,18 @@ public class Template1 extends AppCompatActivity {
                             }
                         }
                     }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
 

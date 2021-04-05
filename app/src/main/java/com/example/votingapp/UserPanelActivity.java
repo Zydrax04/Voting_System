@@ -38,7 +38,8 @@ public class UserPanelActivity extends AppCompatActivity {
 
         //FireBase Reference
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("Users");
+        final DatabaseReference myUsersRef = database.getReference("Users");
+        final DatabaseReference myPollsRef = database.getReference("Polls");
         final ArrayList<String> template = new ArrayList<>();
 
         final Intent intent = getIntent();
@@ -50,17 +51,34 @@ public class UserPanelActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.titletextView2);
         title.setText("Welcome " + username);
         
+        //check if user voted already
+        myUsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String username = ds.child("username").getValue(String.class);
+                        if(username.equals(email) && ds.child("voted").getValue(Long.class) == 1){
+                            voted = true; //check if user has already voted
+                        }
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
         //Take Templates
-        myRef.addValueEventListener(new ValueEventListener() {
+        myPollsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
                     template.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
-                        if(username.equals(email) && ds.child("voted").getValue(Long.class) == 1){
-                            voted = true; //check if user has already voted
-                        }
                         if(username.equals("Template1")){
                             //users.add(new User(username));
                             template.add(username); //name
@@ -135,13 +153,13 @@ public class UserPanelActivity extends AppCompatActivity {
         resultsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //template name
+                //template name and question
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
-                String yesCount = template.get(2);
-                String noCount = template.get(3);
 
                 if(templateName.equals("Template1")) {
+                    String yesCount = template.get(2);
+                    String noCount = template.get(3);
                     Intent i = new Intent(getBaseContext(), ResultsActivity.class);
                     i.putExtra("TEMPLATE_NAME", templateName);
                     i.putExtra("questiontemp", templateQuestion);
