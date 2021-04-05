@@ -55,8 +55,8 @@ public class UserPanelActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
+                    template.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        template.clear();
                         String username = ds.child("username").getValue(String.class);
                         if(username.equals(email) && ds.child("voted").getValue(Long.class) == 1){
                             voted = true; //check if user has already voted

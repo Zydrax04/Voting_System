@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,10 +41,12 @@ public class RegisterActivity extends AppCompatActivity {
     public EditText mMessage;
     public EditText firstNameTextView;
     public EditText lastNameTextView;
+    private String alphabt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public final ArrayList<User> users = new ArrayList<>();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference myRef = database.getReference("Users");
     private final String userId = myRef.push().getKey();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +134,25 @@ public class RegisterActivity extends AppCompatActivity {
                         Environment.DIRECTORY_PICTURES), "cat.png");
                 Bitmap bitmap = BitmapFactory.decodeFile(mFile.getPath());
                 //get Account
-                String message = mEmail.getText().toString() + ":" + "12345" + "\\0";
+                String message = mEmail.getText().toString().trim() + ":" + "6cJf#9de84";
+                //make sure block is divisible by 64
+                while (message.length() % 8 != 0){
+                    int min = 0;
+                    int max = 51;
+                    Random r = new Random();
+                    int i1 = r.nextInt(max - min + 1) + min;
+                    message = message.concat(String.valueOf(alphabt.charAt(i1)));
+                }
+                String formedPassword = message.split(":")[1]; //take password to form account
+                //transform in binary
                 BinaryCode code = new BinaryCode();
                 code.binaryCode(message);
                 String encodedMessage = code.giveStack(); //get message in binary
-                EncodeStegnography stegnography = new EncodeStegnography(encodedMessage, bitmap); //write message in image bitmap
+                //add DES encryption
+                DES Des = new DES();
+                String cipherText = Des.encrypt(encodedMessage);
+                cipherText = cipherText.concat("0101110000110000"); //add String terminator \0
+                EncodeStegnography stegnography = new EncodeStegnography(cipherText, bitmap); //write message in image bitmap
                 bitmap = stegnography.getImage();
 
                 try{
@@ -159,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 boolean createdSuccesfull = false;
-                createdSuccesfull = createAccount();
+                createdSuccesfull = createAccount(formedPassword);
                 if(createdSuccesfull)
                     sendMail();
             }
@@ -182,8 +199,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean createAccount(){
-        String password = "12345";
+    private boolean createAccount(String password){
         String mail = mEmail.getText().toString().trim();
         String firstName = firstNameTextView.getText().toString().trim();
         String lastName = lastNameTextView.getText().toString().trim();

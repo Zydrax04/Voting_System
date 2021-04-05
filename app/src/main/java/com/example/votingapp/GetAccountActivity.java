@@ -53,8 +53,11 @@ public class GetAccountActivity extends AppCompatActivity {
         }
         resultMsg = "Found Account in image!";
         String codedMsg = stegnoDecoder.getEncodedMsg();
+        //Decrypt the taken Code
+        DES Des = new DES();
+        String plainText = Des.decrypt(codedMsg);
         //decode the taken code
-        DecodeBinary decoder = new DecodeBinary(codedMsg);
+        DecodeBinary decoder = new DecodeBinary(plainText);
         String result = decoder.decodeMessage();
         return result;
     }
