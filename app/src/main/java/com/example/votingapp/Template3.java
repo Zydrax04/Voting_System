@@ -73,12 +73,17 @@ public class Template3 extends AppCompatActivity {
         voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!username.equals("Admin")){
-                    userAction(username);
+                if(username.equals("Admin")){
+                    adminAction();
+                    return;
+                }
+                else if(!radioButtonOpt1.isChecked() && !radioButtonOpt2.isChecked() && !radioButtonOpt3.isChecked()){
+                    Toast.makeText(Template3.this, "Please choose an option", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else{
-                    adminAction();
+                    userAction(username);
+                    return;
                 }
             }
         });
@@ -177,10 +182,6 @@ public class Template3 extends AppCompatActivity {
                             else if(radioButtonOpt3.isChecked()){
                                 int crtValue = Integer.parseInt(ds.child("option3votes").getValue().toString());
                                 ds.child("option3votes").getRef().setValue(crtValue+1);
-                            }
-                            else{
-                                Toast.makeText(Template3.this, "Please choose an option", Toast.LENGTH_SHORT).show();
-                                return;
                             }
                         }
                     }

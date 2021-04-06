@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background5"
     tools:context=".Template1">
 
     <RadioGroup
@@ -18,14 +19,14 @@
         <RadioButton
             android:id="@+id/yes"
             android:layout_width="match_parent"
-            android:text="Yes"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Yes" />
 
         <RadioButton
             android:id="@+id/no"
             android:layout_width="match_parent"
-            android:text="No"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="No" />
     </RadioGroup>
 
     <Button

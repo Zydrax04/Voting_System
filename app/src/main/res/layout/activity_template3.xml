@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background5"
     tools:context=".Template3">
 
     <RadioGroup
@@ -49,8 +50,8 @@
         android:layout_height="131dp"
         android:ems="10"
         android:gravity="start|top"
-        android:inputType="textMultiLine"
         android:hint="Which model should the company expose this year?"
+        android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

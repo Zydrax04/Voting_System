@@ -64,12 +64,17 @@ public class Template2 extends AppCompatActivity {
         voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!username.equals("Admin")){
-                    userAction(username);
+                if(username.equals("Admin")){
+                    adminAction();
+                    return;
+                }
+                else if(!radioButtonOpt1.isChecked() && !radioButtonOpt2.isChecked()){
+                    Toast.makeText(Template2.this, "Please choose an option", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else{
-                    adminAction();
+                    userAction(username);
+                    return;
                 }
             }
         });
@@ -157,10 +162,6 @@ public class Template2 extends AppCompatActivity {
                             else if(radioButtonOpt2.isChecked()){
                                 int crtValue = Integer.parseInt(ds.child("option2votes").getValue().toString());
                                 ds.child("option2votes").getRef().setValue(crtValue+1);
-                            }
-                            else{
-                                Toast.makeText(Template2.this, "Please choose an option", Toast.LENGTH_SHORT).show();
-                                return;
                             }
                         }
                     }
