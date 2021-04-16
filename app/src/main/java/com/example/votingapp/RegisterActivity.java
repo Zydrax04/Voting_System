@@ -13,6 +13,7 @@ import android.os.Bundle;
 //import android.support.v7.widget.Toolbar;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference myRef = database.getReference("Users");
     private final String userId = myRef.push().getKey();
-
+    private String deviceID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
+        deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         ImageView getStarted = findViewById(R.id.getStarted);
         mEmail = (EditText)findViewById(R.id.emailAddr);
         firstNameTextView = findViewById(R.id.firstNameTextView);
@@ -136,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                 //get Account
                 String message = mEmail.getText().toString().trim() + ":" + "6cJf#9de84";
                 //make sure block is divisible by 64
-                while (message.length() % 8 != 0){
+                while ((message.length() + deviceID.length() + 1) % 8 != 0){
                     int min = 0;
                     int max = 51;
                     Random r = new Random();
@@ -144,6 +145,8 @@ public class RegisterActivity extends AppCompatActivity {
                     message = message.concat(String.valueOf(alphabt.charAt(i1)));
                 }
                 String formedPassword = message.split(":")[1]; //take password to form account
+                //add deviceID
+                message = message.concat(":" + deviceID);
                 //transform in binary
                 BinaryCode code = new BinaryCode();
                 code.binaryCode(message);

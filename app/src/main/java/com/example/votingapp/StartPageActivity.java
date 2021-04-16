@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 public class StartPageActivity extends AppCompatActivity {
@@ -52,6 +50,7 @@ public class StartPageActivity extends AppCompatActivity {
                 openRegisterActivity();
             }
         });
+
 
 
     }

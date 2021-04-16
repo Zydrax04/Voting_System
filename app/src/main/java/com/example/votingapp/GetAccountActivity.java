@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +34,7 @@ public class GetAccountActivity extends AppCompatActivity {
     private String encodedMsg = "";
     private String resultMsg = "";
     private TextView msgTextView;
+    private String deviceId;
 
     public void openAdminPanelActivity(){
         Intent intent = new Intent(this, AdminPanelActivity.class);
@@ -66,13 +68,15 @@ public class GetAccountActivity extends AppCompatActivity {
         EditText userField = findViewById(R.id.userText);
         EditText passwordField = findViewById(R.id.passwordText);
         String[] credidentials = encodedMsg.split(":");
-        if(credidentials.length == 2) {
+        if(credidentials.length == 3 && credidentials[2].equals(deviceId)) {
             userField.setText(credidentials[0]);
             passwordField.setText(credidentials[1]);
         }else {
             userField.setText("");
             passwordField.setText("");
         }
+        if(credidentials.length == 3 && !credidentials[2].equals(deviceId))
+            Toast.makeText(GetAccountActivity.this, "Detected Login from another Device! \n Please contact Administrator!", Toast.LENGTH_SHORT).show();
     }
 
     public void setTextView(String result){
@@ -90,6 +94,7 @@ public class GetAccountActivity extends AppCompatActivity {
         final String userId = myRef.push().getKey();
 
         //Layout Items
+        deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         Button uploadBtn = findViewById(R.id.uploadBtn);
         Button loginBtn = findViewById(R.id.login);
         AccountImage = (ImageView) findViewById(R.id.uploadedPhoto);

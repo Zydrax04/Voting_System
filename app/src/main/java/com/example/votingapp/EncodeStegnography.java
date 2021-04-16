@@ -15,10 +15,7 @@ public class EncodeStegnography {
             image = bitmap.copy(bitmap.getConfig(), true);
             width = image.getWidth();
             height = image.getHeight();
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-            System.out.println(code);
-            System.out.println("width: " + width);
-            System.out.println("Height: " + height);
+
             int k = 0;
             for(int i=0; i<height; i++) {
 

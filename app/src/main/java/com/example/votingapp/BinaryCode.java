@@ -10,6 +10,7 @@ public class BinaryCode {
     }
 
     public void binaryCode(String message){
+        stack.clear();
         for(int i = message.length() - 1; i >= 0; i--){
             char c = message.charAt(i);
             byte value = (byte) c;
