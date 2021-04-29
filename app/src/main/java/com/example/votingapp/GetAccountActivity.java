@@ -9,7 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -99,6 +102,35 @@ public class GetAccountActivity extends AppCompatActivity {
         Button loginBtn = findViewById(R.id.login);
         AccountImage = (ImageView) findViewById(R.id.uploadedPhoto);
         msgTextView = findViewById(R.id.MsgtextView);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+
+        uploadBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    uploadBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    uploadBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+
+        loginBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    loginBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    loginBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
 
         //Click Listener for upload Button to open Gallery
         uploadBtn.setOnClickListener(new View.OnClickListener() {

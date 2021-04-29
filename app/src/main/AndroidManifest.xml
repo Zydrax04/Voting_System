@@ -14,17 +14,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VotingApp">
-        <activity android:name=".ResultsActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".UserPanelActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".Template3" />
-        <activity android:name=".ChooseTemplateActivity" />
-        <activity android:name=".Template2" />
-        <activity android:name=".Template1" />
-        <activity android:name=".AdminPanelActivity" />
-        <activity android:name=".GetAccountActivity" />
-        <activity android:name=".StartPageActivity">
+        <activity android:name=".AddAccountActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".ResultsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RegisterActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".UserPanelActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePasswordActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Template3" android:screenOrientation="portrait"/>
+        <activity android:name=".ChooseTemplateActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Template2" android:screenOrientation="portrait"/>
+        <activity android:name=".Template1" android:screenOrientation="portrait"/>
+        <activity android:name=".AdminPanelActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".GetAccountActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".StartPageActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,10 +49,40 @@ public class UserPanelActivity extends AppCompatActivity {
         final String username = intent.getStringExtra("FULL_NAME");
         final String email = intent.getStringExtra("USER_NAME");
 
+        //page Buttons
         Button voteBtn = findViewById(R.id.votebtn);
         Button resultsBtn = findViewById(R.id.resultsBtn);
         TextView title = findViewById(R.id.titletextView2);
         title.setText("Welcome " + username);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+
+        voteBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    voteBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    voteBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+
+        resultsBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    resultsBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    resultsBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
         
         //check if user voted already
         myUsersRef.addValueEventListener(new ValueEventListener() {
@@ -121,6 +154,10 @@ public class UserPanelActivity extends AppCompatActivity {
                     Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(template.size() == 0){ //check if template exists
+                    Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //template name
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
@@ -153,6 +190,10 @@ public class UserPanelActivity extends AppCompatActivity {
         resultsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(template.size() == 0){ //check if template exists
+                    Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //template name and question
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);

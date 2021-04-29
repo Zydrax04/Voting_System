@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,6 +44,21 @@ public class ChangePasswordActivity extends AppCompatActivity {
         final EditText newPassword2 = findViewById(R.id.newPassword2);
 
         Button changeBtn = findViewById(R.id.changeBtn);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+        changeBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    changeBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    changeBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
 
         //clicklistener
         changeBtn.setOnClickListener(new View.OnClickListener() {

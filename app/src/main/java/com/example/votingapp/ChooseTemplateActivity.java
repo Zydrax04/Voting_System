@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -41,6 +44,10 @@ public class ChooseTemplateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_template);
 
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+
         ArrayList<ImageView> templates = getTemplates();
         //add EventListener for each template
         for(int i = 0; i < templates.size(); i++){
@@ -50,6 +57,7 @@ public class ChooseTemplateActivity extends AppCompatActivity {
             template.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    template.startAnimation(scaleUp);
                     if(finalI == 1) {
                         Intent intent = new Intent(getBaseContext(), Template1.class);
                         intent.putExtra("USER_NAME", "Admin");
@@ -68,6 +76,7 @@ public class ChooseTemplateActivity extends AppCompatActivity {
                     //openTemplateActivity(finalI);
                 }
             });
+
         }
     }
 }

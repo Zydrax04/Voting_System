@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -50,6 +53,22 @@ public class Template2 extends AppCompatActivity {
         option2 = findViewById(R.id.option2temp2);
         radioButtonOpt1 = findViewById(R.id.radioButtonOpt1);
         radioButtonOpt2 = findViewById(R.id.radioButtonOpt2);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+        //VoteBtn animation
+        voteBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    voteBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    voteBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
 
         if(username != null && !username.equals("Admin")) {
             question.setText(questiontemp2);

@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -73,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //Page Buttons
         deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         ImageView getStarted = findViewById(R.id.getStarted);
         mEmail = (EditText)findViewById(R.id.emailAddr);
@@ -84,6 +88,37 @@ public class RegisterActivity extends AppCompatActivity {
         mEmail.setVisibility(View.INVISIBLE);
         firstNameTextView.setVisibility(View.INVISIBLE);
         lastNameTextView.setVisibility(View.INVISIBLE);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+
+        //GetStarted animation
+        getStarted.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    getStarted.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    getStarted.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+        //registerBtn animation
+        registerBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    registerBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    registerBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+
 
         getStarted.setOnClickListener(new View.OnClickListener() {
             @Override

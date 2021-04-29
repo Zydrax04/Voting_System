@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +37,35 @@ public class StartPageActivity extends AppCompatActivity {
         //Page Buttons
         ImageView loginImg = findViewById(R.id.loginImg);
         ImageView registerImg = findViewById(R.id.registerImg);
+        //Animations
+        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
+        Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
+
+        loginImg.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    loginImg.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    loginImg.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+
+        registerImg.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    registerImg.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    registerImg.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
 
         //OnClickListener for accountBtn -> GetAccount
         loginImg.setOnClickListener(new View.OnClickListener() {
