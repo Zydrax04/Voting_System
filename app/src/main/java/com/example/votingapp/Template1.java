@@ -184,7 +184,7 @@ public class Template1 extends AppCompatActivity {
                         String username = ds.child("username").getValue(String.class);
 
                         if (username.equals(crtUsername)) {
-                            ds.child("voted").getRef().setValue(1);
+                            ds.child("voted1").getRef().setValue(1);
                             //Toast.makeText(Template1.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -135,9 +135,9 @@ public class Template3 extends AppCompatActivity {
                             exists = true;
                             Toast.makeText(Template3.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
                         }
-                        else if(username.matches("Template.")){
-                            ds.getRef().removeValue();
-                        }
+                        //else if(username.matches("Template.")){
+                        //    ds.getRef().removeValue();
+                        //}
                     }
                     //else create Template
                     if(!exists) {
@@ -166,7 +166,7 @@ public class Template3 extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        ds.child("voted").getRef().setValue(0);
+                        ds.child("voted3").getRef().setValue(0);
                     }
                     finish();
                 } catch (Throwable e) {
@@ -220,7 +220,7 @@ public class Template3 extends AppCompatActivity {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
                         if (username.equals(crtUsername)) {
-                            ds.child("voted").getRef().setValue(1);
+                            ds.child("voted3").getRef().setValue(1);
                             //Toast.makeText(Template1.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
                         }
                     }

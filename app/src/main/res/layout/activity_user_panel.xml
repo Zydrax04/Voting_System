@@ -8,6 +8,34 @@
     tools:context=".UserPanelActivity">
 
     <Button
+        android:id="@+id/a3rdresultsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="results"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.883"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.684" />
+
+    <Button
+        android:id="@+id/a3rdvotebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3rd vote"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.684" />
+
+    <Button
         android:id="@+id/a2ndresultsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
