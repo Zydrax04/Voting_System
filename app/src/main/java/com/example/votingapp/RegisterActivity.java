@@ -47,9 +47,13 @@ public class RegisterActivity extends AppCompatActivity {
     public EditText lastNameTextView;
     private String alphabt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-";
     public final ArrayList<User> users = new ArrayList<>();
+    public final ArrayList<String> devices = new ArrayList<>();
+    //firebase reference
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private final DatabaseReference myRef = database.getReference("Users");
-    private final String userId = myRef.push().getKey();
+    private final DatabaseReference myUsersRef = database.getReference("Users");
+    private final DatabaseReference myDevicesRef = database.getReference("Devices");
+    private final String userId = myUsersRef.push().getKey();
+    private final String firebaseDeviceId = myDevicesRef.push().getKey();
     private String deviceID;
     final String secretKey = "1l0v3crypt0graphy!";
 
@@ -58,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -67,6 +71,24 @@ public class RegisterActivity extends AppCompatActivity {
                         String password = ds.child("password").getValue(String.class);
                         User user = new User(username, password);
                         users.add(user);
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        //collect all Devices IDs
+        myDevicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        String id = ds.child("ID").getValue(String.class);
+                        devices.add(id);
+
                     }
                 } catch (Throwable e) {
                     e.printStackTrace();
@@ -257,21 +279,28 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (checkUser) {
             boolean found = false;
-            for (User user1 : users)
+            /*for (User user1 : users)
                 if (user1.getUsername().equals(mail)) {
                     found = true;
                     break;
+                }*/
+            for(String id : devices){ //check if another account was already registered from this device
+                if(id.equals(deviceID)){
+                    found = true;
+                    break;
                 }
+            }
             if (found) {
-                Toast.makeText(RegisterActivity.this, "Email is already registered!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Can only register once!", Toast.LENGTH_SHORT).show();
                 return false;
             }
             else {
-                myRef.child(userId).child("username").setValue(mail);
-                myRef.child(userId).child("password").setValue(hashedPasswd);
-                myRef.child(userId).child("firstName").setValue(firstName);
-                myRef.child(userId).child("lastName").setValue(lastName);
-                myRef.child(userId).child("voted").setValue(0);
+                myUsersRef.child(userId).child("username").setValue(mail);
+                myUsersRef.child(userId).child("password").setValue(hashedPasswd);
+                myUsersRef.child(userId).child("firstName").setValue(firstName);
+                myUsersRef.child(userId).child("lastName").setValue(lastName);
+                //add unique device id that identifies the phone from which the account was created
+                myDevicesRef.child(firebaseDeviceId).child("ID").setValue(deviceID);
                 return true;
             }
         } else {

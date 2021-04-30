@@ -180,8 +180,6 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option3votes").getValue(Long.class).toString());
                         }
                         if(template.size() != 0){
-                            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                            System.out.println(template);
                             templates.add(template); //Add existing template to available templates
                         }
                     }
@@ -204,7 +202,6 @@ public class UserPanelActivity extends AppCompatActivity {
                     return;
                 }
                 //template.clear();
-                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 System.out.println(templates.get(0));
                 System.out.println(templates.size());
                 for(String data : templates.get(0))
