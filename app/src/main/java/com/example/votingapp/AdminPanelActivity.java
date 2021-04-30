@@ -20,10 +20,6 @@ public class AdminPanelActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChangePasswordActivity.class);
         startActivity(intent);
     }
-    public void openAddAccountActivity(){
-        Intent intent = new Intent(this, AddAccountActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +28,6 @@ public class AdminPanelActivity extends AppCompatActivity {
 
         Button makePollBtn = findViewById(R.id.makePollBtn);
         Button passwdBtn = findViewById(R.id.passwdBtn);
-        Button addAccountBtn = findViewById(R.id.addAccountBtn);
         //Animations
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
         Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
@@ -63,18 +58,6 @@ public class AdminPanelActivity extends AppCompatActivity {
             }
         });
 
-        addAccountBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==event.ACTION_DOWN){
-                    addAccountBtn.startAnimation(scaleUp);
-                }
-                else if(event.getAction()==event.ACTION_UP){
-                    addAccountBtn.startAnimation(scaleDown);
-                }
-                return false;
-            }
-        });
 
         //Change Password Click Listener
         passwdBtn.setOnClickListener(new View.OnClickListener() {
@@ -90,12 +73,6 @@ public class AdminPanelActivity extends AppCompatActivity {
                 openChooseTemplateActivity();
             }
         });
-        //addAccountBtn Click Listener
-        addAccountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAddAccountActivity();
-            }
-        });
+
     }
 }

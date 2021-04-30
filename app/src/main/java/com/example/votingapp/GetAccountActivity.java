@@ -1,11 +1,13 @@
 package com.example.votingapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -38,6 +40,7 @@ public class GetAccountActivity extends AppCompatActivity {
     private String resultMsg = "";
     private TextView msgTextView;
     private String deviceId;
+    final String secretKey = "1l0v3crypt0graphy!";
 
     public void openAdminPanelActivity(){
         Intent intent = new Intent(this, AdminPanelActivity.class);
@@ -48,6 +51,7 @@ public class GetAccountActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     String getEncodedMessage(Bitmap bm){
         //take code out of image -> out of stegnography
         DecodeStegnography stegnoDecoder = new DecodeStegnography(bm);
@@ -58,13 +62,16 @@ public class GetAccountActivity extends AppCompatActivity {
         }
         resultMsg = "Found Account in image!";
         String codedMsg = stegnoDecoder.getEncodedMsg();
-        //Decrypt the taken Code
-        DES Des = new DES();
-        String plainText = Des.decrypt(codedMsg);
         //decode the taken code
-        DecodeBinary decoder = new DecodeBinary(plainText);
+        DecodeBinary decoder = new DecodeBinary(codedMsg);
         String result = decoder.decodeMessage();
-        return result;
+        //Decrypt the taken Code
+        AES Aes = new AES();
+        //DES Des = new DES();
+        //String plainText = Des.decrypt(codedMsg);
+        String decryptedString = AES.decrypt(result, secretKey);
+
+        return decryptedString;
     }
 
     public void completeLoginFields(){
@@ -209,6 +216,7 @@ public class GetAccountActivity extends AppCompatActivity {
     }
 
     //Method to set image to ImageView of chosen Photo from the Gallert
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

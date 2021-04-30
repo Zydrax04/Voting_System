@@ -46,7 +46,7 @@ public class DecodeStegnography {
                     }
                 }
 
-                if(decoded || length>150)
+                if(decoded || length>width*height)
                     break;
             }
 

@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VotingApp">
-        <activity android:name=".AddAccountActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".ResultsActivity" android:screenOrientation="portrait" />
         <activity android:name=".RegisterActivity" android:screenOrientation="portrait"/>
         <activity android:name=".UserPanelActivity" android:screenOrientation="portrait"/>

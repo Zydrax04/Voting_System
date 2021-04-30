@@ -1,10 +1,12 @@
 package com.example.votingapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
 //import android.support.design.widget.FloatingActionButton;
@@ -41,16 +43,15 @@ import java.util.Random;
 public class RegisterActivity extends AppCompatActivity {
 
     public EditText mEmail;
-    public EditText mSubject;
-    public EditText mMessage;
     public EditText firstNameTextView;
     public EditText lastNameTextView;
-    private String alphabt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private String alphabt = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-";
     public final ArrayList<User> users = new ArrayList<>();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final DatabaseReference myRef = database.getReference("Users");
     private final String userId = myRef.push().getKey();
     private String deviceID;
+    final String secretKey = "1l0v3crypt0graphy!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,17 +165,18 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 File mFile = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), "cat.png");
                 Bitmap bitmap = BitmapFactory.decodeFile(mFile.getPath());
                 //get Account
-                String message = mEmail.getText().toString().trim() + ":" + "6cJf#9de84";
-                //make sure block is divisible by 64
-                while ((message.length() + deviceID.length() + 1) % 8 != 0){
+                String message = mEmail.getText().toString().trim() + ":";
+                //Create Password of 16 random characters
+                for(int i = 0; i < 16; i++){
                     int min = 0;
-                    int max = 51;
+                    int max = alphabt.length()-1;
                     Random r = new Random();
                     int i1 = r.nextInt(max - min + 1) + min;
                     message = message.concat(String.valueOf(alphabt.charAt(i1)));
@@ -182,15 +184,18 @@ public class RegisterActivity extends AppCompatActivity {
                 String formedPassword = message.split(":")[1]; //take password to form account
                 //add deviceID
                 message = message.concat(":" + deviceID);
+                //Encrypt with AES
+                AES Aes = new AES();
+                String encryptedString = AES.encrypt(message, secretKey);
                 //transform in binary
                 BinaryCode code = new BinaryCode();
-                code.binaryCode(message);
+                code.binaryCode(encryptedString);
                 String encodedMessage = code.giveStack(); //get message in binary
                 //add DES encryption
-                DES Des = new DES();
-                String cipherText = Des.encrypt(encodedMessage);
-                cipherText = cipherText.concat("0101110000110000"); //add String terminator \0
-                EncodeStegnography stegnography = new EncodeStegnography(cipherText, bitmap); //write message in image bitmap
+                //DES Des = new DES();
+                //String cipherText = Des.encrypt(encodedMessage);
+                encodedMessage = encodedMessage.concat("0101110000110000"); //add String terminator \0
+                EncodeStegnography stegnography = new EncodeStegnography(encodedMessage, bitmap); //write message in image bitmap
                 bitmap = stegnography.getImage();
 
                 try{
