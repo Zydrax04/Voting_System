@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -20,11 +19,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class UserPanelActivity extends AppCompatActivity {
     private boolean voted = false;
+    ArrayList<ArrayList<String>> templates = new ArrayList<>();
+    Button a1stVoteBtn;
+    Button a2ndVoteBtn;
+    Button a1stResultsBtn;
+    Button a2ndResultsBtn;
 
     public void openTemplateActivity(Intent i) {
         startActivity(i);
@@ -33,6 +36,15 @@ public class UserPanelActivity extends AppCompatActivity {
     public void openResultsActivity(Intent i){
         startActivity(i);
     }
+
+    public void makeVisible(){
+        if(templates.size() == 2){ //2 templates are available
+            //set unavailable Buttons invisible
+            a2ndResultsBtn.setVisibility(View.VISIBLE);
+            a2ndVoteBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,42 +55,47 @@ public class UserPanelActivity extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myUsersRef = database.getReference("Users");
         final DatabaseReference myPollsRef = database.getReference("Polls");
-        final ArrayList<String> template = new ArrayList<>();
 
         final Intent intent = getIntent();
         final String username = intent.getStringExtra("FULL_NAME");
         final String email = intent.getStringExtra("USER_NAME");
 
         //page Buttons
-        Button voteBtn = findViewById(R.id.votebtn);
-        Button resultsBtn = findViewById(R.id.resultsBtn);
+        a1stVoteBtn = findViewById(R.id.a1stvotebtn);
+        a2ndVoteBtn = findViewById(R.id.a2ndvotebtn);
+        a1stResultsBtn = findViewById(R.id.a1stresultsBtn);
+        a2ndResultsBtn = findViewById(R.id.a2ndresultsBtn);
         TextView title = findViewById(R.id.titletextView2);
         title.setText("Welcome " + username);
         //Animations
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
         Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
 
-        voteBtn.setOnTouchListener(new View.OnTouchListener() {
+        //set unavailable Buttons invisible
+        a2ndResultsBtn.setVisibility(View.INVISIBLE);
+        a2ndVoteBtn.setVisibility(View.INVISIBLE);
+
+        a1stVoteBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==event.ACTION_DOWN){
-                    voteBtn.startAnimation(scaleUp);
+                    a1stVoteBtn.startAnimation(scaleUp);
                 }
                 else if(event.getAction()==event.ACTION_UP){
-                    voteBtn.startAnimation(scaleDown);
+                    a1stVoteBtn.startAnimation(scaleDown);
                 }
                 return false;
             }
         });
 
-        resultsBtn.setOnTouchListener(new View.OnTouchListener() {
+        a1stResultsBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==event.ACTION_DOWN){
-                    resultsBtn.startAnimation(scaleUp);
+                    a1stResultsBtn.startAnimation(scaleUp);
                 }
                 else if(event.getAction()==event.ACTION_UP){
-                    resultsBtn.startAnimation(scaleDown);
+                    a1stResultsBtn.startAnimation(scaleDown);
                 }
                 return false;
             }
@@ -108,11 +125,12 @@ public class UserPanelActivity extends AppCompatActivity {
         myPollsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<String> template = new ArrayList<>();
                 try {
-                    template.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
                         if(username.equals("Template1")){
+                            template.clear();
                             //users.add(new User(username));
                             template.add(username); //name
                             template.add(ds.child("questiontemp1").getValue(String.class)); //question
@@ -120,6 +138,7 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("no").getValue(Long.class).toString()); //number of no answers
                         }
                         if(username.equals("Template2")){
+                            template.clear();
                             template.add(username); //name
                             template.add(ds.child("questiontemp2").getValue(String.class)); //question
                             template.add(ds.child("option1").getValue(String.class)); //answer option1
@@ -128,7 +147,8 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option2votes").getValue(Long.class).toString()); //answer option2 votes
                         }
                         if(username.equals("Template3")){
-                            template.add(username);
+                            template.clear();
+                            template.add(username); //name
                             template.add(ds.child("questiontemp3").getValue(String.class));
                             template.add(ds.child("option1").getValue(String.class));
                             template.add(ds.child("option2").getValue(String.class));
@@ -137,7 +157,12 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option2votes").getValue(Long.class).toString());
                             template.add(ds.child("option3votes").getValue(Long.class).toString());
                         }
+                        if(template.size() != 0){
+                            System.out.println(template);
+                            templates.add(template); //Add existing template to available templates
+                        }
                     }
+                    makeVisible();
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
@@ -147,17 +172,21 @@ public class UserPanelActivity extends AppCompatActivity {
             }
         });
 
-        voteBtn.setOnClickListener(new View.OnClickListener() {
+        a1stVoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<String> template = new ArrayList<>();
                 if(voted){
                     Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(template.size() == 0){ //check if template exists
+                if(templates.size() == 0){ //check if template exists
                     Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //template.clear();
+                for(String data : templates.get(0))
+                    template.add(data);
                 //template name
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
@@ -187,13 +216,112 @@ public class UserPanelActivity extends AppCompatActivity {
             }
         });
 
-        resultsBtn.setOnClickListener(new View.OnClickListener() {
+        a2ndVoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(template.size() == 0){ //check if template exists
+                ArrayList<String> template = new ArrayList<>();
+                if(voted){
+                    Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(templates.size() == 0){ //check if template exists
                     Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //template.clear();
+
+             for(String data : templates.get(1))
+                    template.add(data);
+                //template name
+                String templateName = template.get(0);
+                String templateQuestion = template.get(1);
+                if(templateName.equals("Template1")) {
+                    Intent i = new Intent(getBaseContext(), Template1.class);
+                    i.putExtra("USER_NAME", email);
+                    i.putExtra("questiontemp1", templateQuestion);
+                    openResultsActivity(i);
+                }
+                if(templateName.equals("Template2")){
+                    Intent i = new Intent(getBaseContext(), Template2.class);
+                    i.putExtra("USER_NAME", email);
+                    i.putExtra("questiontemp2", templateQuestion);
+                    i.putExtra("option1", template.get(2));
+                    i.putExtra("option2", template.get(3));
+                    openTemplateActivity(i);
+                }
+                if(templateName.equals("Template3")){
+                    Intent i = new Intent(getBaseContext(), Template3.class);
+                    i.putExtra("USER_NAME", email);
+                    i.putExtra("questiontemp3", templateQuestion);
+                    i.putExtra("option1", template.get(2));
+                    i.putExtra("option2", template.get(3));
+                    i.putExtra("option3", template.get(4));
+                    openTemplateActivity(i);
+                }
+            }
+        });
+
+        a1stResultsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> template = new ArrayList<>();
+                if(templates.size() == 0){ //check if template exists
+                    Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                template.clear();
+                for(String data : templates.get(0))
+                    template.add(data);
+                //template name and question
+                String templateName = template.get(0);
+                String templateQuestion = template.get(1);
+
+                if(templateName.equals("Template1")) {
+                    String yesCount = template.get(2);
+                    String noCount = template.get(3);
+                    Intent i = new Intent(getBaseContext(), ResultsActivity.class);
+                    i.putExtra("TEMPLATE_NAME", templateName);
+                    i.putExtra("questiontemp", templateQuestion);
+                    i.putExtra("yes", yesCount);
+                    i.putExtra("no", noCount);
+                    openTemplateActivity(i);
+                }
+                if(templateName.equals("Template2")){
+                    Intent i = new Intent(getBaseContext(), ResultsActivity.class);
+                    i.putExtra("TEMPLATE_NAME", templateName);
+                    i.putExtra("questiontemp", templateQuestion);
+                    i.putExtra("option1", template.get(2));
+                    i.putExtra("option2", template.get(3));
+                    i.putExtra("option1votes", template.get(4));
+                    i.putExtra("option2votes", template.get(5));
+                    openTemplateActivity(i);
+                }
+                if(templateName.equals("Template3")){
+                    Intent i = new Intent(getBaseContext(), ResultsActivity.class);
+                    i.putExtra("TEMPLATE_NAME", templateName);
+                    i.putExtra("questiontemp", templateQuestion);
+                    i.putExtra("option1", template.get(2));
+                    i.putExtra("option2", template.get(3));
+                    i.putExtra("option3", template.get(4));
+                    i.putExtra("option1votes", template.get(5));
+                    i.putExtra("option2votes", template.get(6));
+                    i.putExtra("option3votes", template.get(7));
+                    openTemplateActivity(i);
+                }
+            }
+        });
+
+        a2ndResultsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> template = new ArrayList<>();
+                if(templates.size() == 0){ //check if template exists
+                    Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                template.clear();
+                for(String data : templates.get(1))
+                    template.add(data);
                 //template name and question
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);

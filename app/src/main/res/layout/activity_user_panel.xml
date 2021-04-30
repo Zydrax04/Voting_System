@@ -7,6 +7,34 @@
     android:background="@drawable/plainbg"
     tools:context=".UserPanelActivity">
 
+    <Button
+        android:id="@+id/a2ndresultsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="results"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.541" />
+
+    <Button
+        android:id="@+id/a2ndvotebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2nd vote"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.541" />
+
     <TextView
         android:id="@+id/titletextView2"
         android:layout_width="wrap_content"
@@ -22,31 +50,32 @@
         app:layout_constraintVertical_bias="0.117" />
 
     <Button
-        android:id="@+id/votebtn"
+        android:id="@+id/a1stvotebtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="vote"
-        android:textSize="30sp"
+        android:text="1st vote"
+        android:textSize="24sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.159"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.401" />
+        app:layout_constraintVertical_bias="0.402" />
 
     <Button
-        android:id="@+id/resultsBtn"
+        android:id="@+id/a1stresultsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="vote results"
-        android:textSize="30sp"
+        android:text="results"
+        android:textSize="24sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.878"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.527" />
+        app:layout_constraintVertical_bias="0.402" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
