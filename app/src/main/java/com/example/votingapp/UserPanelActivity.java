@@ -22,8 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class UserPanelActivity extends AppCompatActivity {
-    private boolean voted = false;
-    ArrayList<ArrayList<String>> templates = new ArrayList<>();
+    private boolean[] voted = {false, false, false};
+    final ArrayList<ArrayList<String>> templates = new ArrayList<>();
     Button a1stVoteBtn;
     Button a2ndVoteBtn;
     Button a1stResultsBtn;
@@ -108,8 +108,16 @@ public class UserPanelActivity extends AppCompatActivity {
                 try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         String username = ds.child("username").getValue(String.class);
-                        if(username.equals(email) && ds.child("voted").getValue(Long.class) == 1){
-                            voted = true; //check if user has already voted
+                        if(username.equals(email)){
+                            if(ds.child("voted1").getValue(Long.class) == 1){
+                                voted[0] = true; //check if user has already voted
+                            }
+                            if(ds.child("voted2").getValue(Long.class) == 1){
+                                voted[1] = true; //check if user has already voted
+                            }
+                            if(ds.child("voted3").getValue(Long.class) == 1){
+                                voted[2] = true; //check if user has already voted
+                            }
                         }
                     }
                 } catch (Throwable e) {
@@ -125,9 +133,9 @@ public class UserPanelActivity extends AppCompatActivity {
         myPollsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                ArrayList<String> template = new ArrayList<>();
                 try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
+                        ArrayList<String> template = new ArrayList<>();
                         String username = ds.child("username").getValue(String.class);
                         if(username.equals("Template1")){
                             template.clear();
@@ -158,6 +166,7 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option3votes").getValue(Long.class).toString());
                         }
                         if(template.size() != 0){
+                            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                             System.out.println(template);
                             templates.add(template); //Add existing template to available templates
                         }
@@ -176,20 +185,23 @@ public class UserPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<String> template = new ArrayList<>();
-                if(voted){
-                    Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if(templates.size() == 0){ //check if template exists
                     Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //template.clear();
+                System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                System.out.println(templates.get(0));
+                System.out.println(templates.size());
                 for(String data : templates.get(0))
                     template.add(data);
                 //template name
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
+                if((templateName.equals("Template1") && voted[0]) || (templateName.equals("Template2") && voted[1]) || (templateName.equals("Template3") && voted[2])){
+                    Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(templateName.equals("Template1")) {
                     Intent i = new Intent(getBaseContext(), Template1.class);
                     i.putExtra("USER_NAME", email);
@@ -220,21 +232,20 @@ public class UserPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<String> template = new ArrayList<>();
-                if(voted){
+                if(voted[0]){
                     Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(templates.size() == 0){ //check if template exists
-                    Toast.makeText(UserPanelActivity.this, "No Poll available yet", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                //template.clear();
 
              for(String data : templates.get(1))
                     template.add(data);
                 //template name
                 String templateName = template.get(0);
                 String templateQuestion = template.get(1);
+                if((templateName.equals("Template1") && voted[0]) || (templateName.equals("Template2") && voted[1]) || (templateName.equals("Template3") && voted[2])){
+                    Toast.makeText(UserPanelActivity.this, "Already voted Sir!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(templateName.equals("Template1")) {
                     Intent i = new Intent(getBaseContext(), Template1.class);
                     i.putExtra("USER_NAME", email);

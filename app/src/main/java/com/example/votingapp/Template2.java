@@ -150,7 +150,7 @@ public class Template2 extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 try {
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        ds.child("voted").getRef().setValue(0);
+                        ds.child("voted2").getRef().setValue(0);
                     }
                     finish();
                 } catch (Throwable e) {
