@@ -77,6 +77,12 @@ public class GetAccountActivity extends AppCompatActivity {
     public void completeLoginFields(){
         EditText userField = findViewById(R.id.userText);
         EditText passwordField = findViewById(R.id.passwordText);
+        if(encodedMsg == null) { //AES returns null if it can not decrypt the resulted message thus there is no message
+            setTextView("No Account found in image!");
+            return;
+        }
+        if(encodedMsg.length() == 0) //preventive measure in case AES can decrypt the random string
+            return;
         String[] credidentials = encodedMsg.split(":");
         if(credidentials.length == 3 && credidentials[2].equals(deviceId)) {
             userField.setText(credidentials[0]);
