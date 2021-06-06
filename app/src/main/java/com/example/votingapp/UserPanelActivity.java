@@ -171,6 +171,9 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option2").getValue(String.class)); //answer option2
                             template.add(ds.child("option1votes").getValue(Long.class).toString()); //answer option1 votes
                             template.add(ds.child("option2votes").getValue(Long.class).toString()); //answer option2 votes
+                            template.add(ds.child("year").getValue(Long.class).toString()); //year
+                            template.add(ds.child("month").getValue(Long.class).toString()); //month
+                            template.add(ds.child("day").getValue(Long.class).toString()); //day
                         }
                         if(username.equals("Template3")){
                             template.clear();
@@ -182,6 +185,9 @@ public class UserPanelActivity extends AppCompatActivity {
                             template.add(ds.child("option1votes").getValue(Long.class).toString());
                             template.add(ds.child("option2votes").getValue(Long.class).toString());
                             template.add(ds.child("option3votes").getValue(Long.class).toString());
+                            template.add(ds.child("year").getValue(Long.class).toString()); //year
+                            template.add(ds.child("month").getValue(Long.class).toString()); //month
+                            template.add(ds.child("day").getValue(Long.class).toString()); //day
                         }
                         if(template.size() != 0){
                             templates.add(template); //Add existing template to available templates
@@ -269,6 +275,12 @@ public class UserPanelActivity extends AppCompatActivity {
             openSelectedActivity(i);
         }
         if(templateName.equals("Template2")){
+            int year = Integer.parseInt(template.get(6));
+            int month = Integer.parseInt(template.get(7));
+            int day = Integer.parseInt(template.get(8));
+            boolean isOnTime = checkCalendar(year, month, day);
+            if(!isOnTime)
+                return;
             Intent i = new Intent(getBaseContext(), Template2.class);
             i.putExtra("USER_NAME", email);
             i.putExtra("questiontemp2", templateQuestion);
@@ -277,6 +289,12 @@ public class UserPanelActivity extends AppCompatActivity {
             openSelectedActivity(i);
         }
         if(templateName.equals("Template3")){
+            int year = Integer.parseInt(template.get(8));
+            int month = Integer.parseInt(template.get(9));
+            int day = Integer.parseInt(template.get(10));
+            boolean isOnTime = checkCalendar(year, month, day);
+            if(!isOnTime)
+                return;
             Intent i = new Intent(getBaseContext(), Template3.class);
             i.putExtra("USER_NAME", email);
             i.putExtra("questiontemp3", templateQuestion);

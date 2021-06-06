@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+
 public class Template3 extends AppCompatActivity {
 
     private boolean exists = false;
@@ -37,6 +39,7 @@ public class Template3 extends AppCompatActivity {
     RadioButton radioButtonOpt1;
     RadioButton radioButtonOpt2;
     RadioButton radioButtonOpt3;
+    TextView nrDaysTemp3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class Template3 extends AppCompatActivity {
         radioButtonOpt1 = findViewById(R.id.radioBtnT3Opt1);
         radioButtonOpt2 = findViewById(R.id.radioBtnT3Opt2);
         radioButtonOpt3 = findViewById(R.id.radioBtnT3Opt3);
+        nrDaysTemp3 = findViewById(R.id.nrDaysTemp3);
         //Animations
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
         Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
@@ -86,6 +90,7 @@ public class Template3 extends AppCompatActivity {
             option2.setEnabled(false);
             option3.setText(option3temp3);
             option3.setEnabled(false);
+            nrDaysTemp3.setVisibility(View.INVISIBLE);
         }
 
         //OnClickListener for accountBtn -> GetAccount
@@ -110,6 +115,9 @@ public class Template3 extends AppCompatActivity {
     }
 
     public void adminAction(){
+        Calendar calendar = getCalendar();
+        if(calendar == null)
+            return;
         //take question
         String questiontemp3 = question.getText().toString();
         String option1temp3 = option1.getText().toString();
@@ -132,6 +140,9 @@ public class Template3 extends AppCompatActivity {
                             ds.child("option1votes").getRef().setValue(0);
                             ds.child("option2votes").getRef().setValue(0);
                             ds.child("option3votes").getRef().setValue(0);
+                            ds.child("year").getRef().setValue(calendar.get(Calendar.YEAR));
+                            ds.child("month").getRef().setValue(calendar.get(Calendar.MONTH)); //month count starts at 0
+                            ds.child("day").getRef().setValue(calendar.get(Calendar.DAY_OF_MONTH));
                             exists = true;
                             Toast.makeText(Template3.this, "Template updated successfully", Toast.LENGTH_SHORT).show();
                         }
@@ -149,6 +160,9 @@ public class Template3 extends AppCompatActivity {
                         myPollsRef.child(userId).child("option1votes").setValue(0);
                         myPollsRef.child(userId).child("option2votes").setValue(0);
                         myPollsRef.child(userId).child("option3votes").setValue(0);
+                        myPollsRef.child(userId).child("year").setValue(calendar.get(Calendar.YEAR));
+                        myPollsRef.child(userId).child("month").setValue(calendar.get(Calendar.MONTH)); //month count starts at 0
+                        myPollsRef.child(userId).child("day").setValue(calendar.get(Calendar.DAY_OF_MONTH));
                         Toast.makeText(Template3.this, "Template created successfully", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -233,6 +247,18 @@ public class Template3 extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public Calendar getCalendar(){
+        String nrDaysText = nrDaysTemp3.getText().toString();
+        if(nrDaysText.length() == 0){
+            Toast.makeText(Template3.this, "Please enter number of days", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        int nrDays = Integer.parseInt(nrDaysText);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, nrDays);
+        return calendar;
     }
 
 }
