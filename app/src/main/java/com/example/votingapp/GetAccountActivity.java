@@ -34,6 +34,7 @@ public class GetAccountActivity extends AppCompatActivity {
 
     private final ArrayList<User> users = new ArrayList<>();
     private ImageView AccountImage;
+    private Button recoveryBtn;
     private static final int PICK_IMAGE = 1;
     Uri imageUri;
     private String encodedMsg = "";
@@ -44,6 +45,10 @@ public class GetAccountActivity extends AppCompatActivity {
 
     public void openAdminPanelActivity(){
         Intent intent = new Intent(this, AdminPanelActivity.class);
+        startActivity(intent);
+    }
+    public void openRecoverAccountActivity(){
+        Intent intent = new Intent(this, RecoverAccountActivity.class);
         startActivity(intent);
     }
 
@@ -115,6 +120,7 @@ public class GetAccountActivity extends AppCompatActivity {
         Button loginBtn = findViewById(R.id.login);
         AccountImage = (ImageView) findViewById(R.id.uploadedPhoto);
         msgTextView = findViewById(R.id.MsgtextView);
+        recoveryBtn = findViewById(R.id.recoveryBtn);
         //Animations
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
         Animation scaleDown = AnimationUtils.loadAnimation(this, R.anim.scale_down);
@@ -144,6 +150,19 @@ public class GetAccountActivity extends AppCompatActivity {
                 return false;
             }
         });
+        recoveryBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==event.ACTION_DOWN){
+                    recoveryBtn.startAnimation(scaleUp);
+                }
+                else if(event.getAction()==event.ACTION_UP){
+                    recoveryBtn.startAnimation(scaleDown);
+                }
+                return false;
+            }
+        });
+
 
         //Click Listener for upload Button to open Gallery
         uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +175,14 @@ public class GetAccountActivity extends AppCompatActivity {
 
                 startActivityForResult(Intent.createChooser(gallery, "Sellect Picture"), PICK_IMAGE);
 
+            }
+        });
+
+        //Click Listener for recoverBtn
+        recoveryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRecoverAccountActivity();
             }
         });
 

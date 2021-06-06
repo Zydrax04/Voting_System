@@ -62,7 +62,7 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void>  {
     //Variables
     private Context mContext;
     private Session mSession;
-
+    private boolean isRecoveryEmail = false;
     private String mEmail;
     private String mSubject;
     private String mMessage;
@@ -78,6 +78,14 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void>  {
         this.mSubject = mSubject;
         this.mMessage = mMessage;
         //getBitMap();
+    }
+    //Constructor 2
+    public JavaMailAPI(Context mContext, String mEmail, String mSubject, String mMessage, boolean isRecoveryEmail) {
+        this.mContext = mContext;
+        this.mEmail = mEmail;
+        this.mSubject = mSubject;
+        this.mMessage = mMessage;
+        this.isRecoveryEmail = isRecoveryEmail;
     }
 
 
@@ -200,9 +208,10 @@ public class JavaMailAPI extends AsyncTask<Void,Void,Void>  {
             //message.setContent(multipart);
 
             //saveBitMap();
-
-            attachmentBodyPart.attachFile(mFile);
-            multipart.addBodyPart(attachmentBodyPart);
+            if(!isRecoveryEmail) {
+                attachmentBodyPart.attachFile(mFile);
+                multipart.addBodyPart(attachmentBodyPart);
+            }
             message.setContent(multipart);
             //Sending email
             Transport.send(message);

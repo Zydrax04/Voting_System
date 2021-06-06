@@ -25,7 +25,6 @@ import java.util.Calendar;
 public class UserPanelActivity extends AppCompatActivity {
     private boolean[] voted = {false, false, false};
     Calendar crtCalendar = Calendar.getInstance();
-    Calendar pollCalendar;
     String email = "";
     final ArrayList<ArrayList<String>> templates = new ArrayList<>();
     Button a1stVoteBtn;
