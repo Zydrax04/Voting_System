@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         //collect all Devices IDs
-        myDevicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 try {
@@ -279,11 +279,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (checkUser) {
             boolean found = false;
-            /*for (User user1 : users)
+            for (User user1 : users) {
                 if (user1.getUsername().equals(mail)) {
-                    found = true;
-                    break;
-                }*/
+                    Toast.makeText(RegisterActivity.this, "Email already in Use!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
             for(String id : devices){ //check if another account was already registered from this device
                 if(id.equals(deviceID)){
                     found = true;
@@ -299,6 +300,7 @@ public class RegisterActivity extends AppCompatActivity {
                 myUsersRef.child(userId).child("password").setValue(hashedPasswd);
                 myUsersRef.child(userId).child("firstName").setValue(firstName);
                 myUsersRef.child(userId).child("lastName").setValue(lastName);
+                myUsersRef.child(userId).child("ID").setValue(deviceID);
                 //add unique device id that identifies the phone from which the account was created
                 myDevicesRef.child(firebaseDeviceId).child("ID").setValue(deviceID);
                 return true;
