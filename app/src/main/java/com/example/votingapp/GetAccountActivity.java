@@ -89,7 +89,23 @@ public class GetAccountActivity extends AppCompatActivity {
         if(encodedMsg.length() == 0) //preventive measure in case AES can decrypt the random string
             return;
         String[] credidentials = encodedMsg.split(":");
-        if(credidentials.length == 3 && credidentials[2].equals(deviceId)) {
+        String email = credidentials[0];
+        if(credidentials.length == 3 && credidentials[2].equals(deviceId)){ //id in photo matches phone id
+            userField.setText(credidentials[0]);
+            passwordField.setText(credidentials[1]);
+            return;
+        }
+        for(User crtUser : users){ //check if user has a 2nd device authorized to log in
+            if(email.equals(crtUser.getUsername()) && deviceId.equals(crtUser.getDeviceId())){
+                userField.setText(credidentials[0]);
+                passwordField.setText(credidentials[1]);
+                return;
+            }
+        }
+        userField.setText("");
+        passwordField.setText("");
+        Toast.makeText(GetAccountActivity.this, "Detected Login from another Device! \n Please contact Administrator!", Toast.LENGTH_SHORT).show();
+        /*if(credidentials.length == 3 && credidentials[2].equals(deviceId)) {
             userField.setText(credidentials[0]);
             passwordField.setText(credidentials[1]);
         }else {
@@ -98,7 +114,9 @@ public class GetAccountActivity extends AppCompatActivity {
         }
         if(credidentials.length == 3 && !credidentials[2].equals(deviceId))
             Toast.makeText(GetAccountActivity.this, "Detected Login from another Device! \n Please contact Administrator!", Toast.LENGTH_SHORT).show();
+        */
     }
+
 
     public void setTextView(String result){
         msgTextView.setText(result);
@@ -197,7 +215,8 @@ public class GetAccountActivity extends AppCompatActivity {
                         if(!username.matches("Template.")) {
                             String firstName = ds.child("firstName").getValue(String.class);
                             String lastName = ds.child("lastName").getValue(String.class);
-                            User user = new User(username, password, firstName, lastName);
+                            String ID = ds.child("recoveryID").getValue(String.class);
+                            User user = new User(username, password, firstName, lastName, ID);
                             users.add(user);
                         }
                     }

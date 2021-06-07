@@ -301,6 +301,7 @@ public class RegisterActivity extends AppCompatActivity {
                 myUsersRef.child(userId).child("firstName").setValue(firstName);
                 myUsersRef.child(userId).child("lastName").setValue(lastName);
                 myUsersRef.child(userId).child("ID").setValue(deviceID);
+                myUsersRef.child(userId).child("recoveryID").setValue("0");
                 //add unique device id that identifies the phone from which the account was created
                 myDevicesRef.child(firebaseDeviceId).child("ID").setValue(deviceID);
                 return true;
