@@ -124,6 +124,11 @@ public class Template3 extends AppCompatActivity {
         String option2temp3 = option2.getText().toString();
         String option3temp3 = option3.getText().toString();
 
+        if(questiontemp3.length() == 0){
+            Toast.makeText(Template3.this, "Please enter question", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //search if template already exists
         myPollsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
